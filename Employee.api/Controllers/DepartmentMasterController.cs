@@ -1,4 +1,5 @@
-﻿using Employee.api.Model;
+﻿using Employee.api.Dtos.Departments;
+using Employee.api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,15 +20,30 @@ namespace Employee.api.Controllers
         [HttpGet("GetAllDepartment")]
         public IActionResult GetDepartment()
         {
-            var deptList = _context.Departments.ToList();
+            var deptList = _context.Departments
+                                   .Select(d => new DepartmentResponseDto
+                                   {
+                                       Id = d.Id,
+                                       Name = d.Name,
+                                       IsActive = d.IsActive,
+                                   }).ToList();
             return Ok(deptList);
         }
 
         // Add Department.
         [HttpPost("AddDepartment")]
-        public IActionResult AddDepaartment([FromBody] Department dept)
+        public IActionResult AddDepartment([FromBody] CreateDepartmentDto dto)
         {
-            _context.Departments.Add(dept);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var department = new Department()
+            {
+                Name = dto.Name,
+                IsActive = dto.IsActive
+
+            };
+            _context.Departments.Add(department);
             _context.SaveChanges();
             return Ok("Department is Added Successfully !");
 
@@ -35,21 +51,25 @@ namespace Employee.api.Controllers
         
 
         // Update the department.
-        [HttpPut("UpdateDepartment")]
-        public IActionResult UpdateDepartment([FromBody] Department dept)
+        [HttpPut("UpdateDepartment/{id:int}")]
+        public IActionResult UpdateDepartment(int id,[FromBody] UpdateDepartmentDto dto)
         {
-            var existingDept = _context.Departments.Find(dept.Id);
-            if(existingDept == null)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var existingDept = _context.Departments.Find(id);
+
+            if (existingDept == null)
             {
                 return NotFound("Department is not present.");
 
             }
 
-            existingDept.Name = dept.Name;
-            existingDept.IsActive = dept.IsActive;
+            existingDept.Name = dto.Name;
+            existingDept.IsActive = dto.IsActive;
 
             _context.SaveChanges();
-            return Ok("Department is upsdated Successfully. ");
+            return Ok("Department is updated Successfully. ");
         }
 
         //Delete the Department.
@@ -59,7 +79,7 @@ namespace Employee.api.Controllers
             var existingDept = _context.Departments.Find(id);
             if(existingDept == null)
             {
-                return NotFound("Departmetn is not present.");
+                return NotFound("Department is not present.");
             }
 
             _context.Departments.Remove(existingDept);
