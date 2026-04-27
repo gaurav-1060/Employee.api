@@ -12,8 +12,8 @@ namespace Employee.api
                          .MinimumLevel.Information()
                         .WriteTo.Console()
                         .WriteTo.File($"Logs/log_,",
-                        rollingInterval: RollingInterval.Day,
-                        retainedFileCountLimit: 3
+                        rollingInterval: RollingInterval.Day, // it will create new log file every day 
+                        retainedFileCountLimit: 3 // here it automatically delete the log file after 3 dayes 
                          )
                         .CreateLogger();
 
