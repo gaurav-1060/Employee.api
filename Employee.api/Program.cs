@@ -11,7 +11,10 @@ namespace Employee.api
             Log.Logger = new LoggerConfiguration()
                          .MinimumLevel.Information()
                         .WriteTo.Console()
-                        .WriteTo.File($"Logs/log_{DateTime.Now:yyyyMMdd_HHmmss}.txt")
+                        .WriteTo.File($"Logs/log_,",
+                        rollingInterval: RollingInterval.Day,
+                        retainedFileCountLimit: 3
+                         )
                         .CreateLogger();
 
             try
