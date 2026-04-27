@@ -1,0 +1,25 @@
+2026-04-13 14:42:33.459 +05:30 [INF] Starting the application.
+2026-04-13 14:42:33.887 +05:30 [INF] Now listening on: https://localhost:7213
+2026-04-13 14:42:33.890 +05:30 [INF] Now listening on: http://localhost:5149
+2026-04-13 14:42:33.979 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2026-04-13 14:42:33.982 +05:30 [INF] Hosting environment: Development
+2026-04-13 14:42:33.983 +05:30 [INF] Content root path: C:\Users\asus\source\repos\Employee.api\Employee.api
+2026-04-13 14:42:34.394 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7213/swagger/index.html - null null
+2026-04-13 14:42:34.543 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7213/swagger/index.html - 200 null text/html;charset=utf-8 150.4471ms
+2026-04-13 14:42:34.613 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7213/_framework/aspnetcore-browser-refresh.js - null null
+2026-04-13 14:42:34.613 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7213/_vs/browserLink - null null
+2026-04-13 14:42:34.621 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7213/_framework/aspnetcore-browser-refresh.js - 200 16509 application/javascript; charset=utf-8 7.3533ms
+2026-04-13 14:42:34.647 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7213/_vs/browserLink - 200 null text/javascript; charset=UTF-8 33.1534ms
+2026-04-13 14:42:34.736 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7213/swagger/v1/swagger.json - null null
+2026-04-13 14:42:34.754 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7213/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 18.351ms
+2026-04-13 14:42:42.885 +05:30 [INF] Request starting HTTP/2 GET https://localhost:7213/api/DepartmentMaster - null null
+2026-04-13 14:42:42.985 +05:30 [INF] Executing endpoint 'Employee.api.Controllers.DepartmentMasterController.GetDepartment (Employee.api)'
+2026-04-13 14:42:43.029 +05:30 [INF] Route matched with {action = "GetDepartment", controller = "DepartmentMaster"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetDepartment() on controller Employee.api.Controllers.DepartmentMasterController (Employee.api).
+2026-04-13 14:42:43.247 +05:30 [INF] Fetching all departments
+2026-04-13 14:42:45.048 +05:30 [INF] Executed DbCommand (62ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [d].[Id], [d].[IsActive], [d].[Name]
+FROM [DepartmentTbl] AS [d]
+2026-04-13 14:42:45.198 +05:30 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Employee.api.Dtos.Departments.DepartmentResponseDto, Employee.api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-04-13 14:42:45.213 +05:30 [INF] Executed action Employee.api.Controllers.DepartmentMasterController.GetDepartment (Employee.api) in 2175.3914ms
+2026-04-13 14:42:45.218 +05:30 [INF] Executed endpoint 'Employee.api.Controllers.DepartmentMasterController.GetDepartment (Employee.api)'
+2026-04-13 14:42:45.232 +05:30 [INF] Request finished HTTP/2 GET https://localhost:7213/api/DepartmentMaster - 200 null application/json; charset=utf-8 2346.3755ms

@@ -11,7 +11,7 @@ namespace Employee.api.Models
                 
         }
      
-        public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeEntity> Employees { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Designation> Designations { get; set; }
     }

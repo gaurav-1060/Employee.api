@@ -1,92 +1,60 @@
 ﻿using Employee.api.Dtos.Departments;
-using Employee.api.Models;
-using Microsoft.AspNetCore.Http;
+using Employee.api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Employee.api.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentMasterController : ControllerBase
     {
-        private readonly EmployeeDbContext _context;
+        private readonly IDepartmentService _service;
 
-        public DepartmentMasterController(EmployeeDbContext context)
+        public DepartmentMasterController(IDepartmentService service)
         {
-            _context = context;
+            _service = service;
         }
 
-        // Read all departments from the table.
-        [HttpGet("GetAllDepartment")]
-        public IActionResult GetDepartment()
+        // GET all departments
+        [HttpGet]
+        public async Task<IActionResult> GetDepartment()
         {
-            var deptList = _context.Departments
-                                   .Select(d => new DepartmentResponseDto
-                                   {
-                                       Id = d.Id,
-                                       Name = d.Name,
-                                       IsActive = d.IsActive,
-                                   }).ToList();
-            return Ok(deptList);
+            var result = await _service.GetAllDepartmentsAsync();
+            return Ok(result);
         }
 
-        // Add Department.
-        [HttpPost("AddDepartment")]
-        public IActionResult AddDepartment([FromBody] CreateDepartmentDto dto)
+        // GET department by ID
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetDepartmentById(int id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var department = new Department()
-            {
-                Name = dto.Name,
-                IsActive = dto.IsActive
-
-            };
-            _context.Departments.Add(department);
-            _context.SaveChanges();
-            return Ok("Department is Added Successfully !");
-
-        }
-        
-
-        // Update the department.
-        [HttpPut("UpdateDepartment/{id:int}")]
-        public IActionResult UpdateDepartment(int id,[FromBody] UpdateDepartmentDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var existingDept = _context.Departments.Find(id);
-
-            if (existingDept == null)
-            {
-                return NotFound("Department is not present.");
-
-            }
-
-            existingDept.Name = dto.Name;
-            existingDept.IsActive = dto.IsActive;
-
-            _context.SaveChanges();
-            return Ok("Department is updated Successfully. ");
+            var result = await _service.GetDepartmentByIdAsync(id);
+            return Ok(result);
         }
 
-        //Delete the Department.
-        [HttpDelete("DeleteDepartment/{id:int}")]
-        public IActionResult DeleteDepartment(int id)
+        // ADD department
+        [HttpPost]
+        public async Task<IActionResult> AddDepartment([FromBody] CreateDepartmentDto dto)
         {
-            var existingDept = _context.Departments.Find(id);
-            if(existingDept == null)
-            {
-                return NotFound("Department is not present.");
-            }
-
-            _context.Departments.Remove(existingDept);
-            _context.SaveChanges();
-            return Ok("Department is deleted successfully.");
-
+            await _service.CreateDepartmentAsync(dto);
+            return Ok("Department is added successfully");
         }
 
+        // UPDATE department
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateDepartment(int id, [FromBody] UpdateDepartmentDto dto)
+        {
+            await _service.UpdateDepartmentAsync(id, dto);
+            return Ok("Department updated successfully");
+        }
+
+        // DELETE department
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteDepartment(int id)
+        {
+            await _service.DeleteDepartmentAsync(id);
+            return Ok("Department deleted successfully");
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Employee.api.Model;
-using Microsoft.AspNetCore.Http;
+﻿using Employee.api.Dtos.Designations;
+using Employee.api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Employee.api.Controllers
@@ -8,64 +8,51 @@ namespace Employee.api.Controllers
     [ApiController]
     public class DesignationMasterController : ControllerBase
     {
-        private readonly EmployeeDbContext _context;
+        private readonly IDesignationService _service;
 
-        public DesignationMasterController(EmployeeDbContext context)
+        public DesignationMasterController(IDesignationService service)
         {
-            _context = context;
-            
+            _service = service;
         }
 
-        [HttpGet("GetAllDesignations")]
-        public IActionResult GetDesignations()
+        // GET all designations
+        [HttpGet]
+        public async Task<IActionResult> GetAllDesignations()
         {
-            var designations = _context.Designations.ToList();
-            _context.SaveChanges();
-            return Ok(designations);
+            var result = await _service.GetAllDesignationsAsync();
+            return Ok(result);
         }
 
-        [HttpPost("AddDesignation")]
-        public IActionResult AddDesignation([FromBody] Designation des)
+        // GET designation by ID
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetDesignationById(int id)
         {
-
-            _context.Designations.Add(des);
-            _context.SaveChanges();
-            return Ok("Designation is added successfully.");
-
+            var result = await _service.GetDesignationByIdAsync(id);
+            return Ok(result);
         }
 
-        [HttpPut("UpdateDesignation")]
-        public IActionResult UpdateDesignation(Designation des)
+        // ADD designation
+        [HttpPost]
+        public async Task<IActionResult> AddDesignation([FromBody] CreateDesignationDto dto)
         {
-            var designation = _context.Designations.Find(des.Id);
-            if(designation == null)
-            {
-                return BadRequest();
-            }
-
-            designation.Name = des.Name;
-            designation.DepartmentId = des.DepartmentId;
-            _context.SaveChanges();
-
-            return Ok("Designation is updated successfully.");
-
+            await _service.CreateDesignationAsync(dto);
+            return StatusCode(201, "Designation created successfully");
         }
 
-        [HttpDelete("DeleteDesignation/{id:int}")]
-        public IActionResult DeleteDesignation(int id )
+        // UPDATE designation
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateDesignation(int id, [FromBody] UpdateDesignationDto dto)
         {
-            var designation = _context.Designations.Find(id);
-            if(designation == null)
-            {
-                return BadRequest();
-            }
-
-            _context.Designations.Remove(designation);
-            _context.SaveChanges();
-            return Ok("Designation is deleted successfully.");
+            await _service.UpdateDesignationAsync(id, dto);
+            return Ok("Designation updated successfully");
         }
 
-
-
+        // DELETE designation
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteDesignation(int id)
+        {
+            await _service.DeleteDesignationAsync(id);
+            return Ok("Designation deleted successfully");
+        }
     }
 }

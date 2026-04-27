@@ -20,39 +20,41 @@ namespace Employee.api.Repositories
 
         }
 
-        public async Task<Department?> GetDepartmentByIdAsync(int id)
+        public async Task<Department> GetDepartmentByIdAsync(int id)
         {
             return await _context.Departments.FindAsync(id);
         }
 
         public async Task AddDepartmentAsync(Department department)
         {
-            await _context.Departments.AddAsync(department);
+            _context.Departments.Add(department);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ExistsByNameAsync(string name)
+        {
+            return await _context.Departments
+                .AnyAsync(d => d.Name == name);
+        }
+
+        public async Task UpdateDepartmentAsync(Department department)
+        {
+
+            _context.Departments.Update(department);
+            await _context.SaveChangesAsync();
+            
         }
 
         public async Task DeleteDepartmentAsync(int id)
         {
             var dept = await _context.Departments.FindAsync(id);
 
-            if (dept != null)
-            {
-                _context.Departments.Remove(dept);
-                await _context.SaveChangesAsync();
-            }
-        }
+            if (dept == null)
+                return;
 
-        public async Task UpdateDepartmentAsync(Department department)
-        {
-            var dept = await _context.Departments.FindAsync(department.Id);
+             _context.Departments.Remove(dept);
+            await _context.SaveChangesAsync();
 
-            if (dept != null)
-            {
-                dept.Name = department.Name;
-                dept.IsActive = department.IsActive;
-
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

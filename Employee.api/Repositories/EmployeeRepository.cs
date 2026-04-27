@@ -13,50 +13,43 @@ namespace Employee.api.Repositories
             _context = context;
         }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync()
+        public async Task<List<EmployeeEntity>> GetAllEmployeesAsync()
         {
             return await _context.Employees.ToListAsync();
         }
 
-        public async Task<Employee?> GetEmployeeByIdAsync(int id)
+        public async Task<EmployeeEntity> GetEmployeeByIdAsync(int id)
         {
             return await _context.Employees.FindAsync(id);
         }
-
-        public async Task AddEmployeeAsync(Employee employee)
+        public async Task<bool> ExistsByNameAsync(string name)
         {
-            await _context.Employees.AddAsync(employee);
+            return await _context.Employees
+                .AnyAsync(d => d.Name == name);
+        }
+
+        public async Task AddEmployeeAsync(EmployeeEntity employee)
+        {
+             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateEmployeeAsync(Employee employee)
+        public async Task UpdateEmployeeAsync(EmployeeEntity employee)
         {
-            var existing = await _context.Employees.FindAsync(employee.Id);
-
-            if (existing != null)
-            {
-                existing.Name = employee.Name;
-                existing.ContactNo = employee.ContactNo;
-                existing.City = employee.City;
-                existing.State = employee.State;
-                existing.PinCode = employee.PinCode;
-                existing.AltContactNo = employee.AltContactNo;
-                existing.Address = employee.Address;
-                existing.DesignationId = employee.DesignationId;
-
-                await _context.SaveChangesAsync();
-            }
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
+            
         }
 
         public async Task DeleteEmployeeAsync(int id)
         {
             var emp = await _context.Employees.FindAsync(id);
 
-            if (emp != null)
-            {
-                _context.Employees.Remove(emp);
-                await _context.SaveChangesAsync();
-            }
+            if(emp == null) return;
+
+            _context.Employees.Remove(emp);
+            await _context.SaveChangesAsync();
+            
         }
     }
 }
